@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const port = 3000;
 const apiURL = 'http://192.168.43.47:8888';
+const asimAPIURL = 'http://asimservicetest.dadabhagwan.org/api/Location/ThemeShowActionChanged';
 
 /* Test API. */
 router.get('/test', function (req, res, next) {
@@ -38,10 +39,25 @@ router.post('/sequence/state', function (req, res, next) {
         },
         json: true
     };
-    request(options, function (error, response, body) {
-        if (error) res.send(JSON.parse(error));
-        console.log(body);
-        res.send(body);
+    const asimData = {
+        method: 'POST',
+        url: asimAPIURL,
+        body:
+        {
+            LocationId: req.body.locationID,
+            ActionName: req.body.state.toLocaleUpperCase(),
+            AccessToken: 'Dada'
+        },
+        json: true
+    };
+    request(asimData, function (asimerr, response, res) {
+        if (asimerr) res.send(JSON.parse(error));
+        console.log('Asim res:', res);
+        request(options, function (error, response, body) {
+            if (error) res.send(JSON.parse(error));
+            console.log(body);
+            res.send(body);
+        });
     });
 });
 
