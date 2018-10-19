@@ -4,7 +4,7 @@ const request = require("request");
 const bodyParser = require('body-parser');
 
 const port = 3000;
-const apiURL = 'http://192.168.43.47:8888';
+const vixenMachineURL = 'http://192.168.43.47:8888'; // set IP of vixen machine
 const asimAPIURL = 'http://asimservicetest.dadabhagwan.org/api/Location/ThemeShowActionChanged';
 
 /* Test API. */
@@ -17,7 +17,7 @@ router.get('/getSequences', function (req, res, next) {
     console.log('getSequences');
     const options = {
         method: 'GET',
-        url: apiURL + '/api/play/getSequences',
+        url: vixenMachineURL + '/api/play/getSequences',
     };
     request(options, function (error, response, body) {
         if (error) res.send(JSON.parse(error));
@@ -31,7 +31,7 @@ router.post('/sequence/state', function (req, res, next) {
     console.log('sequence/state', req.body);
     const options = {
         method: 'POST',
-        url: apiURL + '/api/play/' + req.body.state + 'Sequence',
+        url: vixenMachineURL + '/api/play/' + req.body.state + 'Sequence',
         body:
         {
             FileName: req.body.FileName,
@@ -66,7 +66,7 @@ router.get('/playStatus', function (req, res, next) {
     console.log('playStatus', req.body);
     const options = {
         method: 'GET',
-        url: apiURL + '/api/play/status',
+        url: vixenMachineURL + '/api/play/status',
     };
     request(options, function (error, response, body) {
         if (error) res.send(JSON.parse(error));
