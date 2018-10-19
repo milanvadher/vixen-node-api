@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express()
 const request = require("request");
+const cors = require('cors')
 const bodyParser = require('body-parser');
 
 const port = 3000;
 const vixenMachineURL = 'http://192.168.43.47:8888'; // set IP of vixen machine
 const asimAPIURL = 'http://asimservicetest.dadabhagwan.org/api/Location/ThemeShowActionChanged';
+
+router.use(cors());
 
 /* Test API. */
 router.get('/test', function (req, res, next) {
