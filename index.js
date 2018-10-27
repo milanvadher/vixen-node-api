@@ -33,7 +33,6 @@ app.get('/getSequences', function (req, res, next) {
 
 /* Sequence State API. */
 app.post('/sequence/state', function (req, res, next) {
-    console.log('sequence/state', req);
     const options = {
         method: 'POST',
         url: vixenMachineURL + '/api/play/' + req.body.state + 'Sequence',
@@ -55,14 +54,20 @@ app.post('/sequence/state', function (req, res, next) {
         },
         json: true
     };
-    request(asimData, function (asimerr, response, res) {
-        if (asimerr) res.send(error);
-        console.log('Asim res:', res);
-        request(options, function (error, response, body) {
-            if (error) res.send(error);
-            console.log(body);
-            res.send(body);
-        });
+    request(asimData, function (asimerr, response, asimBody) {
+        if (asimerr) res.send(asimerr);
+        // console.log('Asim options:', asimData.body);
+        // console.log('Asim res:', asimBody);
+        // console.log('Vixen Options:', options.body);
+        if (asimBody.Status == 1) {
+            request(options, function (error, response, body) {
+                if (error) res.send(error);
+                console.log(body);
+                res.send(body);
+            });
+        } else {
+            console.log(asimBody.error);
+        }
     });
 });
 
