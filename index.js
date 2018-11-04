@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 const port = 3000;
 const vixenMachineURL = 'http://192.168.43.12:8888'; // set IP of vixen machine
-const asimAPIURL = 'http://asimservicetest.dadabhagwan.org/api/Location/ThemeShowActionChanged';
+const asimAPIURL = 'http://asimservice.dadabhagwan.org/api/Location/ThemeShowActionChanged';
 a = 1;
 b = 117;
 
