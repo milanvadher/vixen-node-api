@@ -1,3 +1,4 @@
+
 const express = require('express');
 const app = express()
 const request = require("request");
@@ -5,8 +6,10 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 
 const port = 3000;
-const vixenMachineURL = 'http://192.168.43.47:8888'; // set IP of vixen machine
+const vixenMachineURL = 'http://192.168.43.12:8888'; // set IP of vixen machine
 const asimAPIURL = 'http://asimservicetest.dadabhagwan.org/api/Location/ThemeShowActionChanged';
+a = 1;
+b = 117;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,11 +22,11 @@ app.get('/test', function (req, res, next) {
 
 /* Get Sequences API. */
 app.get('/getSequences', function (req, res, next) {
-    console.log('getSequences');
     const options = {
         method: 'GET',
-        url: vixenMachineURL + '/api/play/getSequences',
+        url: 'http://192.168.' + a + '.' + b + ':8888/api/play/getSequences',
     };
+    console.log('getSequences', options);
     request(options, function (error, response, body) {
         if (error) res.send(error);
         console.log(body);
@@ -35,7 +38,7 @@ app.get('/getSequences', function (req, res, next) {
 app.post('/sequence/state', function (req, res, next) {
     const options = {
         method: 'POST',
-        url: vixenMachineURL + '/api/play/' + req.body.state + 'Sequence',
+        url: 'http://192.168.' + a + '.' + b + ':8888/api/play/' + req.body.state + 'Sequence',
         body:
         {
             FileName: req.body.FileName,
@@ -43,40 +46,42 @@ app.post('/sequence/state', function (req, res, next) {
         },
         json: true
     };
-    const asimData = {
-        method: 'POST',
-        url: asimAPIURL,
-        body:
-        {
-            LocationId: req.body.locationID,
-            ActionName: (req.body.state).toUpperCase(),
-            AccessToken: 'Dada'
-        },
-        json: true
-    };
-    request(asimData, function (asimerr, response, asimBody) {
-        if (asimerr) res.send(asimerr);
-        // console.log('Asim options:', asimData.body);
-        // console.log('Asim res:', asimBody);
-        // console.log('Vixen Options:', options.body);
-        if (asimBody.Status == 1) {
-            request(options, function (error, response, body) {
-                if (error) res.send(error);
-                console.log(body);
-                res.send(body);
-            });
-        } else {
-            console.log(asimBody.error);
-        }
+    if (req.body.locationID && req.body.locationID != 0 && req.body.locationID != '' && req.body.locationID != null) {
+        asimApiCall({
+            method: 'POST',
+            url: asimAPIURL,
+            body:
+            {
+                LocationId: req.body.locationID,
+                ActionName: (req.body.state).toUpperCase(),
+                AccessToken: 'Dada'
+            },
+            json: true
+        });
+    }
+    request(options, function (error, response, body) {
+        if (error) res.send(error);
+        console.log(body);
+        res.send(body);
     });
 });
+
+function asimApiCall(data) {
+    request(data, function (asimerr, response, asimBody) {
+        if (asimBody.Status == 1) {
+            console.log('success', asimBody);
+        } else {
+            console.log('error', asimBody);
+        }
+    });
+}
 
 /* Play Status API. */
 app.get('/playStatus', function (req, res, next) {
     console.log('playStatus', req.body);
     const options = {
         method: 'GET',
-        url: vixenMachineURL + '/api/play/status',
+        url: 'http://192.168.' + a + '.' + b + ':8888/api/play/status',
     };
     request(options, function (error, response, body) {
         if (error) res.send(error);
